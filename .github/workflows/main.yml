@@ -19,4 +19,10 @@ jobs:
       - name: Install Terraform plugins
         run: tflint --init
       - name: Lint Terraform files
-        run: tflint
+        run: tflint -f junit > tflint_report.xml        
+      - name: Publish test report
+        uses: mikepenz/action-junit-report@v2
+        # Only run this step on failure
+        if: ${{ failure() }}
+        with:
+          report_paths: cfn_lint_report.xml        
