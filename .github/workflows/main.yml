@@ -1,0 +1,22 @@
+name: tflint-serverless
+
+on:
+  pull_request:
+    branches:
+      # TODO: replace this if you are not using 'main' as your target
+      # branch for pull requests.
+      - main
+
+jobs:
+  tflint-serverless:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v1
+        with:
+          tflint_version: v0.29.0
+      - name: Install Terraform plugins
+        run: tflint --init
+      - name: Lint Terraform files
+        run: tflint
