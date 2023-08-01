@@ -2,31 +2,47 @@ name: tflint-serverless
 
 on:
   push:
-    branches:
-      # TODO: replace this if you are not using 'main' as your target
-      # branch for pull requests.
-      - main
+    branches: [ main ]
+
 permissions:
   pull-requests: write
   contents: write
-  repository-projects: write    
+  repository-projects: write
+  
 jobs:
-  tflint-serverless:
-    runs-on: ubuntu-latest
+  tflint:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v1
-        with:
-          tflint_version: v0.29.0
-      - name: Install Terraform plugins
-        run: tflint --init
-      - name: Lint Terraform files
-        run: |
-          tflint -f json > tflint_report.json       
+    - uses: actions/checkout@v3
+      name: Checkout source code
+
+    - uses: actions/cache@v3
+      name: Cache plugin dir
+      with:
+        path: ~/.tflint.d/plugins
+        key: ${{ matrix.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
+
+    - uses: terraform-linters/setup-tflint@v3
+      name: Setup TFLint
+      with:
+        tflint_version: v0.44.1
+
+    - name: Show version
+      run: tflint --version
+
+    - name: Init TFLint
+      run: tflint --init
+
+    - name: Run TFLint
+      run: | 
+        tflint --force -f json > tflint_report.json
           git config --global user.email "nick.holbrook@gmail.com"
           git config --global user.name "Nick Holbrook"
           git add .
           git commit -am "TFLint report"
           git push origin main
-     
