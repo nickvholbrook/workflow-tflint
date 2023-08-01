@@ -1,7 +1,7 @@
 name: tflint-serverless
 
 on:
-  pull_request:
+  push:
     branches:
       # TODO: replace this if you are not using 'main' as your target
       # branch for pull requests.
