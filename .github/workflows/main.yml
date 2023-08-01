@@ -23,7 +23,7 @@ jobs:
         run: tflint --init
       - name: Lint Terraform files
         run: |
-          tflint -f junit > tflint_report.xml        
+          tflint > tflint_report.xml        
           git config --global user.email "nick.holbrook@gmail.com"
           git config --global user.name "Nick Holbrook"
           git add .
