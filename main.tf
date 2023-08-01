@@ -12,11 +12,6 @@ resource "azurerm_resource_group" "example" {
   location = "West Europe"
 }
 
-resource "azurerm_resource_group" "example1" {
-  provider = azurerm.dev         #alias reference
-  name     = var.rg_details.name #var.variable.key
-  location = var.rg_details.location
-}
 resource "azurerm_virtual_network" "example" {
   provider            = azurerm.dev #alias reference
   name                = "example-network"
