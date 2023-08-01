@@ -1,6 +1,3 @@
-locals {
-  a = 40
-}
 provider "azurerm" {
   # Configuration options
   features {}
