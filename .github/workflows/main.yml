@@ -6,7 +6,10 @@ on:
       # TODO: replace this if you are not using 'main' as your target
       # branch for pull requests.
       - main
-
+permissions:
+  pull-requests: write
+  contents: write
+  repository-projects: write    
 jobs:
   tflint-serverless:
     runs-on: ubuntu-latest
@@ -19,9 +22,11 @@ jobs:
       - name: Install Terraform plugins
         run: tflint --init
       - name: Lint Terraform files
-        run: tflint -f junit > tflint_report.xml        
-      - name: Publish test report
-        uses: mikepenz/action-junit-report@v2
-        # Only run this step on failure
-        with:
-          report_paths: cfn_lint_report.xml        
+        run: |
+          tflint -f junit > tflint_report.xml        
+          git config --global user.email "nick.holbrook@gmail.com"
+          git config --global user.name "Nick Holbrook"
+          git add .
+          git commit -am "TFLint report"
+          git push origin main
+     
